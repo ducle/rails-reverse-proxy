@@ -45,7 +45,8 @@ module ReverseProxy
       source_request = Rack::Request.new(env)
 
       # We can pass in a custom path
-      uri = URI.parse("#{url}#{options[:path] || env['ORIGINAL_FULLPATH']}")
+      # uri = URI.parse("#{url}#{options[:path] || env['ORIGINAL_FULLPATH']}")
+      uri = URI.parse("#{url}#{options[:path]}")
 
       # Initialize request
       target_request = Net::HTTP.const_get(source_request.request_method.capitalize).new(uri.request_uri)
@@ -65,8 +66,9 @@ module ReverseProxy
         target_request.body_stream = source_request.body
       end
 
-      target_request.content_length = source_request.content_length || 0
-      target_request.content_type   = source_request.content_type if source_request.content_type
+      # this does not work
+      # target_request.content_length = source_request.content_length || 0
+      # target_request.content_type   = source_request.content_type if source_request.content_type
 
       # Hold the response here
       target_response = nil
